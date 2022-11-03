@@ -16,6 +16,8 @@ namespace NZWalks.API.Repositories
             this._nZWalksDbContext = nZWalksDbContext;
         }
 
+       
+
 
 
         // Metodo sincrono
@@ -38,6 +40,77 @@ namespace NZWalks.API.Repositories
 
               return listaRegiones;
 
+        }
+
+        public async Task<Region> GetRegionByIdAsync(Guid regionId)
+        {
+            var regionSegunId = await _nZWalksDbContext.Regions.Where(region => region.Id == regionId).FirstOrDefaultAsync();
+
+            return regionSegunId;
+        }
+
+        public async Task<IEnumerable<Region>> GetRegionByNameAsync(string regionName)
+        {
+            var regionSegunNombre = await _nZWalksDbContext.Regions.Where(region => region.Name == regionName).ToListAsync();
+
+            return regionSegunNombre;
+        }
+
+        public async Task<Region> AddRegionAsync(Region region)
+        {
+            // Creamos una ID nueva automaticamente
+
+            region.Id = Guid.NewGuid();
+
+            // Añadimos la region a la db
+
+             await _nZWalksDbContext.AddAsync(region);
+
+            // Guardamos los cambios de la nueva region
+
+            await _nZWalksDbContext.SaveChangesAsync();
+
+            // Devolvemos la region añadida
+
+            return region;
+
+        }
+
+        public async Task<Region> DeleteRegionAsync(Guid regionId)
+        {
+            var searchId = await _nZWalksDbContext.Regions.Where(region => region.Id == regionId).FirstOrDefaultAsync();
+
+            if(searchId == null)
+            {
+                return null;
+            }
+
+             _nZWalksDbContext.Regions.Remove(searchId);
+
+            await _nZWalksDbContext.SaveChangesAsync();
+
+            return searchId;
+        }
+
+        public async Task<Region> UpdateRegionAsync(Guid regionId, Region region)
+        {
+            var buscarRegion = await _nZWalksDbContext.Regions.Where(region => region.Id == regionId).FirstOrDefaultAsync();
+
+            if(buscarRegion == null)
+            {
+                return null;
+            }
+
+            buscarRegion.Code = region.Code;
+            buscarRegion.Name = region.Code;
+            buscarRegion.Area = region.Area;
+            buscarRegion.Lat = region.Lat;
+            buscarRegion.Long = region.Long;
+            buscarRegion.Population = region.Population;
+
+           await _nZWalksDbContext.SaveChangesAsync();
+
+            return buscarRegion;
         }
     }
 }
