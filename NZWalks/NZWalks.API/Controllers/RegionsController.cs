@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using NZWalks.API.Models.Domain;
+using NZWalks.API.Models.DTO;
 using NZWalks.API.Repositories;
 
 namespace NZWalks.API.Controllers
@@ -56,7 +57,7 @@ namespace NZWalks.API.Controllers
             //    regionsDto.Add(regionDTO);
             //});
 
-            var regionsDto = _mapper.Map<List<Region>>(listaRegiones);
+            var regionsDto = _mapper.Map<List<RegionDto>>(listaRegiones);
             
             return Ok(regionsDto);
 
