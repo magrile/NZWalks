@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using NZWalks.API.Data;
 using NZWalks.API.Repositories;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,8 +24,16 @@ builder.Services.AddDbContext<NZWalksDbContext>(options =>
 
 builder.Services.AddScoped<IRegionRepository, RegionRepository>();
 
+// Inyectamos la dependencia de Walk
+
+builder.Services.AddScoped<IWalkRepository, WalkRepository>();
+
 // iNYECTAMOS EL AUTOMAPPER
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
+
+// Ignoramos los ciclos
+builder.Services.AddControllersWithViews()
+                .AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 
 var app = builder.Build();
 
