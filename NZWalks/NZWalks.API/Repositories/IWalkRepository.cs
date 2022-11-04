@@ -16,7 +16,13 @@ namespace NZWalks.API.Repositories
 
         public Task<Walk> AddNewWalk(Walk walk);
 
+        // Update un paseo
 
+        public Task<Walk> UpdateWalk(Guid walkId, Walk walk);
+
+        // Deete un paseo
+
+        public Task<Walk> DeleteWalk(Guid walkId);
         
     }
 }

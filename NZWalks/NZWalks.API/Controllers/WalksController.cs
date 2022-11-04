@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using NZWalks.API.Models.Domain;
 using NZWalks.API.Models.DTO;
 using NZWalks.API.Repositories;
+using System.Drawing;
 
 namespace NZWalks.API.Controllers
 {
@@ -54,7 +55,7 @@ namespace NZWalks.API.Controllers
         }
 
         [HttpPost]
-        
+
         public async Task<IActionResult> AddNewWalk([FromBody] AddNewWalkRequestDto addwalk)
         {
             // Convertir el dto en un objeto de modelo
@@ -86,8 +87,68 @@ namespace NZWalks.API.Controllers
 
             // Enviar la respuesta del dto de vuelta al cliente
 
-            return CreatedAtAction(nameof(GetAllWalks), new { walkId = walkDto.Id}, walkDto);
+            return CreatedAtAction(nameof(GetAllWalks), new { walkId = walkDto.Id }, walkDto);
 
+        }
+
+        [HttpPut]
+        [Route("{walkId:guid}")]
+
+        public async Task<IActionResult> UpdateWalkAsync([FromRoute] Guid walkId, [FromBody] UpdateWalkRequestDto walkRequest)
+        {
+            // Convertir DTO en modelo
+
+            var walk = new Walk
+            {
+
+                Length = walkRequest.Length,
+                Name = walkRequest.Name,
+                RegionId = walkRequest.RegionId,
+                WalkDifficultyId = walkRequest.WalkDifficultyId,
+                
+            };
+
+            // updatear la region
+            walk = await _walkRepository.UpdateWalk(walkId, walk);
+
+            // si es nula devuelve not found
+
+            if (walk == null)
+            {
+                return NotFound();
+            }
+
+            // Convertir modelo en dto
+
+            var walkDto = new WalkDto
+            {
+                Id = walk.Id,
+                Length = walk.Length,
+                Name = walk.Name,
+                WalkDifficultyId = walk.WalkDifficultyId,
+                RegionId = walk.RegionId
+            };
+            // return Ok
+
+            return Ok(walkDto);
+        }
+
+        [HttpDelete]
+        [Route("{walkId:guid}")]
+
+        public async Task<IActionResult> DeleteWalkById(Guid walkId)
+        {
+
+           var walkModel = await _walkRepository.DeleteWalk(walkId);
+
+            if(walkModel == null)
+            {
+                return NotFound();
+            }
+
+            var walkDto = _mapper.Map<Walk>(walkModel);
+
+            return Ok(walkDto);
         }
     }
 }

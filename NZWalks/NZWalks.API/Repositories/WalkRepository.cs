@@ -53,5 +53,39 @@ namespace NZWalks.API.Repositories
 
             return walk;
         }
+
+        public async Task<Walk> UpdateWalk(Guid walkId, Walk walk)
+        {
+           var existingWalk = await _nZWalksDbContext.Walks.Where(walk => walk.Id == walkId).FirstOrDefaultAsync();
+
+            if( existingWalk != null)
+            {
+                existingWalk.Length = walk.Length;
+                existingWalk.Name = walk.Name;
+                existingWalk.WalkDifficultyId = walk.WalkDifficultyId;
+                existingWalk.RegionId = walk.RegionId;
+
+                await _nZWalksDbContext.SaveChangesAsync();
+
+                return existingWalk;
+            }
+
+            return null;
+        }
+
+        public async Task<Walk> DeleteWalk(Guid walkId)
+        {
+            var walkExist = await _nZWalksDbContext.Walks.Where(walk => walk.Id == walkId).FirstOrDefaultAsync();
+
+            if (walkExist == null)
+            {
+                return null;
+            }
+
+            _nZWalksDbContext.Walks.Remove(walkExist);
+            await _nZWalksDbContext.SaveChangesAsync();
+
+            return walkExist;
+        }
     }
 }
