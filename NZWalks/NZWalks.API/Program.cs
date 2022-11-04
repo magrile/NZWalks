@@ -28,6 +28,10 @@ builder.Services.AddScoped<IRegionRepository, RegionRepository>();
 
 builder.Services.AddScoped<IWalkRepository, WalkRepository>();
 
+// Inyectamos la dependencia de regiones
+
+builder.Services.AddScoped<IWalkDifficultyRepository, WalkDifficultyRepository>();
+
 // iNYECTAMOS EL AUTOMAPPER
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 

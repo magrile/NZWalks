@@ -37,7 +37,7 @@ namespace NZWalks.API.Controllers
 
         [HttpGet]
         [Route("{walkId:guid}")]
-        [ActionName("")]
+        [ActionName("GetWalkById")]
 
         public async Task<IActionResult> GetWalkById(Guid walkId)
         {
@@ -87,7 +87,7 @@ namespace NZWalks.API.Controllers
 
             // Enviar la respuesta del dto de vuelta al cliente
 
-            return CreatedAtAction(nameof(GetAllWalks), new { walkId = walkDto.Id }, walkDto);
+            return CreatedAtAction(nameof(GetWalkById), new { walkId = walkDto.Id }, walkDto);
 
         }
 
